@@ -102,6 +102,13 @@ def signup_for_activity(activity_name: str, email: str):
     if email in activity["participants"]:
         raise HTTPException(status_code=400, detail="Student already signed up for this activity")
     
+    # Check if activity is full
+    if len(activity["participants"]) >= activity["max_participants"]:
+        raise HTTPException(status_code=400, detail="Activity is full")
+    
+    # Add student to activity
+    activity["participants"].append(email)
+    return {"message": f"Successfully signed up {email} for {activity_name}"}
 @app.delete("/activities/{activity_name}/participants/{email}")
 def remove_participant(activity_name: str, email: str):
     """Remove a student from an activity"""
